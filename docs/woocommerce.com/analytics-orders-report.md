@@ -8,7 +8,7 @@ Refunded orders cannot be excluded from the orders report. Refunded orders have 
 
 ![Orders Report Overview](images/analytics-orders-report.png)
 
-### Advanced Filters
+### Advanced filters
 
 The advanced filters allow adding multiple filters to the report. These filters can be applied in two ways:
 
@@ -22,18 +22,18 @@ The following fields can be used for filtering:
 - Order Status
 - Products
 - Coupon Codes
-- Customer Type
+- Customer type
 - Refunds
 - Tax Rates
 
-![Customers Report Advanced Filters](images/analytics-orders-report-advanced-filters.png)
+![Customers Report Advanced filters](images/analytics-orders-report-advanced-filters.png)
 
 ### Report Sorting
 
 The report table allows sorting by the following columns:
 
 - Date
-- Items Sold
-- Net Sales
+- Items sold
+- Net sales
 
 By default, the report shows the most recent orders.

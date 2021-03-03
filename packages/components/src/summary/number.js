@@ -178,7 +178,7 @@ SummaryNumber.propTypes = {
 	 */
 	onToggle: PropTypes.func,
 	/**
-	 * A string description of the previous value's timeframe, ex "Previous Year:".
+	 * A string description of the previous value's timeframe, ex "Previous year:".
 	 */
 	prevLabel: PropTypes.string,
 	/**
@@ -208,7 +208,7 @@ SummaryNumber.defaultProps = {
 	href: '',
 	hrefType: 'wc-admin',
 	isOpen: false,
-	prevLabel: __( 'Previous Period:', 'woocommerce-admin' ),
+	prevLabel: __( 'Previous period:', 'woocommerce-admin' ),
 	reverseTrend: false,
 	selected: false,
 	onLinkClickCallback: noop,

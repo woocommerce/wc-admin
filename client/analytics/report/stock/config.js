@@ -17,7 +17,7 @@ export const filters = applyFilters( STOCK_REPORT_FILTERS_FILTER, [
 		param: 'type',
 		showFilters: () => true,
 		filters: [
-			{ label: __( 'All Products', 'woocommerce-admin' ), value: 'all' },
+			{ label: __( 'All products', 'woocommerce-admin' ), value: 'all' },
 			{
 				label: __( 'Out of Stock', 'woocommerce-admin' ),
 				value: 'outofstock',

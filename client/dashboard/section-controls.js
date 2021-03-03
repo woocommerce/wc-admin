@@ -41,7 +41,7 @@ class SectionControls extends Component {
 			<Fragment>
 				<div className="woocommerce-ellipsis-menu__item">
 					<TextControl
-						label={ __( 'Section Title', 'woocommerce-admin' ) }
+						label={ __( 'Section title', 'woocommerce-admin' ) }
 						onBlur={ onTitleBlur }
 						onChange={ onTitleChange }
 						required
@@ -62,9 +62,9 @@ class SectionControls extends Component {
 						<MenuItem isClickable onInvoke={ this.onMoveDown }>
 							<Icon
 								icon={ 'arrow-down-alt2' }
-								label={ __( 'Move Down' ) }
+								label={ __( 'Move down' ) }
 							/>
-							{ __( 'Move Down', 'woocommerce-admin' ) }
+							{ __( 'Move down', 'woocommerce-admin' ) }
 						</MenuItem>
 					) }
 					<MenuItem isClickable onInvoke={ onRemove }>

@@ -70,7 +70,7 @@ class CustomersReportTable extends Component {
 			{
 				label: __( 'AOV', 'woocommerce-admin' ),
 				screenReaderLabel: __(
-					'Average Order Value',
+					'Average order value',
 					'woocommerce-admin'
 				),
 				key: 'avg_order_value',

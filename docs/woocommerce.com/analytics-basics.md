@@ -9,12 +9,12 @@ The Date Range picker allows you to specify which dates you want to include in t
 
 - Today
 - Yesterday
-- Week to Date
-- Last Week
+- Week to date
+- Last week
 - Month to Date
 - Last Month
-- Quarter to Date
-- Last Year
+- Quarter to date
+- Last year
 
 You can also select which date range to compare against, either the same range from the _Prior Year_ or the _Prior Period_.
 
@@ -26,8 +26,8 @@ On the custom picker, you can either manually enter the start and end date using
 
 After either choosing a preset, or a custom date range, click the _Update_ button to modify the data in the report. Note by doing this, the date range selected is added to the address of the report URL - which allows you to bookmark, or share a report url with a specific date range to other Store admins. This date selection is persisted on the report view until you navigate away from the report.
 
-## Advanced Filters
-Depending on the report you are viewing, their might also be other Quick Filters and/or Advanced Filters that allow you to further customize the data set being viewed.
+## Advanced filters
+Depending on the report you are viewing, their might also be other Quick Filters and/or Advanced filters that allow you to further customize the data set being viewed.
 
 ![Analytics Filters](analytics-basics-advanced-filters.png)
 

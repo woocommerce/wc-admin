@@ -17,7 +17,7 @@ const COUPON_REPORT_ADVANCED_FILTERS_FILTER =
 export const charts = applyFilters( COUPON_REPORT_CHARTS_FILTER, [
 	{
 		key: 'orders_count',
-		label: __( 'Discounted Orders', 'woocommerce-admin' ),
+		label: __( 'Discounted orders', 'woocommerce-admin' ),
 		order: 'desc',
 		orderby: 'orders_count',
 		type: 'number',
@@ -38,9 +38,9 @@ export const filters = applyFilters( COUPON_REPORT_FILTERS_FILTER, [
 		param: 'filter',
 		showFilters: () => true,
 		filters: [
-			{ label: __( 'All Coupons', 'woocommerce-admin' ), value: 'all' },
+			{ label: __( 'All coupons', 'woocommerce-admin' ), value: 'all' },
 			{
-				label: __( 'Single Coupon', 'woocommerce-admin' ),
+				label: __( 'Single coupon', 'woocommerce-admin' ),
 				value: 'select_coupon',
 				chartMode: 'item-comparison',
 				subFilters: [
@@ -59,7 +59,7 @@ export const filters = applyFilters( COUPON_REPORT_FILTERS_FILTER, [
 									'woocommerce-admin'
 								),
 								button: __(
-									'Single Coupon',
+									'Single coupon',
 									'woocommerce-admin'
 								),
 							},

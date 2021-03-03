@@ -28,7 +28,7 @@ class CouponsReportTable extends Component {
 	getHeadersContent() {
 		return [
 			{
-				label: __( 'Coupon Code', 'woocommerce-admin' ),
+				label: __( 'Coupon code', 'woocommerce-admin' ),
 				key: 'code',
 				required: true,
 				isLeftAligned: true,
@@ -43,7 +43,7 @@ class CouponsReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Amount Discounted', 'woocommerce-admin' ),
+				label: __( 'Amount discounted', 'woocommerce-admin' ),
 				key: 'amount',
 				isSortable: true,
 				isNumeric: true,

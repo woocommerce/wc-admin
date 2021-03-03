@@ -11,7 +11,7 @@ import { rows, headers } from './index';
 
 export const Basic = () => (
 	<Card size={ null }>
-		<Table caption="Revenue Last Week" rows={ rows } headers={ headers } />
+		<Table caption="Revenue Last week" rows={ rows } headers={ headers } />
 	</Card>
 );
 

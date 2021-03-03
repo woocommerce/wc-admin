@@ -12,7 +12,7 @@ This option loads the report for the customer you have selected.
 
 ![Customers Report Single Customer View](images/analytics-customers-report-single-customer.png)
 
-### Advanced Filters
+### Advanced filters
 
 There are several filters available to the Customers Report:
 
@@ -22,11 +22,11 @@ There are several filters available to the Customers Report:
 - Email
 - Orders (count)
 - Total Spend
-- AOV (Average Order Value)
+- AOV (Average order value)
 - Registered
 - Last Active
 
-![Customers Report Advanced Filters](images/analytics-customers-report-advanced-filters.png)
+![Customers Report Advanced filters](images/analytics-customers-report-advanced-filters.png)
 
 A special note about the Name, Username, Country / Region, and Email filters:
 

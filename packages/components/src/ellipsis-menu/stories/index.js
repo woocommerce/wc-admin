@@ -14,7 +14,7 @@ const ExampleEllipsisMenu = withState( {
 		label="Choose which analytics to display"
 		renderContent={ ( { onToggle } ) => (
 			<Fragment>
-				<MenuTitle>Display Stats</MenuTitle>
+				<MenuTitle>Display stats</MenuTitle>
 				<MenuItem
 					isCheckbox
 					isClickable

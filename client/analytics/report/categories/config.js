@@ -19,14 +19,14 @@ const CATEGORY_REPORT_ADVANCED_FILTERS_FILTER =
 export const charts = applyFilters( CATEGORY_REPORT_CHARTS_FILTER, [
 	{
 		key: 'items_sold',
-		label: __( 'Items Sold', 'woocommerce-admin' ),
+		label: __( 'Items sold', 'woocommerce-admin' ),
 		order: 'desc',
 		orderby: 'items_sold',
 		type: 'number',
 	},
 	{
 		key: 'net_revenue',
-		label: __( 'Net Sales', 'woocommerce-admin' ),
+		label: __( 'Net sales', 'woocommerce-admin' ),
 		order: 'desc',
 		orderby: 'net_revenue',
 		type: 'currency',
@@ -48,11 +48,11 @@ export const filters = applyFilters( CATEGORY_REPORT_FILTERS_FILTER, [
 		showFilters: () => true,
 		filters: [
 			{
-				label: __( 'All Categories', 'woocommerce-admin' ),
+				label: __( 'All categories', 'woocommerce-admin' ),
 				value: 'all',
 			},
 			{
-				label: __( 'Single Category', 'woocommerce-admin' ),
+				label: __( 'Single category', 'woocommerce-admin' ),
 				value: 'select_category',
 				chartMode: 'item-comparison',
 				subFilters: [
@@ -71,7 +71,7 @@ export const filters = applyFilters( CATEGORY_REPORT_FILTERS_FILTER, [
 									'woocommerce-admin'
 								),
 								button: __(
-									'Single Category',
+									'Single category',
 									'woocommerce-admin'
 								),
 							},

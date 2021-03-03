@@ -69,7 +69,7 @@ class RevenueReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Gross Sales', 'woocommerce-admin' ),
+				label: __( 'Gross sales', 'woocommerce-admin' ),
 				key: 'gross_sales',
 				required: false,
 				isSortable: true,
@@ -90,7 +90,7 @@ class RevenueReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Net Sales', 'woocommerce-admin' ),
+				label: __( 'Net sales', 'woocommerce-admin' ),
 				key: 'net_revenue',
 				required: false,
 				isSortable: true,
@@ -111,7 +111,7 @@ class RevenueReportTable extends Component {
 				isNumeric: true,
 			},
 			{
-				label: __( 'Total Sales', 'woocommerce-admin' ),
+				label: __( 'Total sales', 'woocommerce-admin' ),
 				key: 'total_sales',
 				required: false,
 				isSortable: true,

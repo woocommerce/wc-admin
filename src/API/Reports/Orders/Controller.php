@@ -518,7 +518,7 @@ class Controller extends ReportsController implements ExportableInterface {
 			'status'         => __( 'Status', 'woocommerce-admin' ),
 			'customer_type'  => __( 'Customer', 'woocommerce-admin' ),
 			'products'       => __( 'Product(s)', 'woocommerce-admin' ),
-			'num_items_sold' => __( 'Items Sold', 'woocommerce-admin' ),
+			'num_items_sold' => __( 'Items sold', 'woocommerce-admin' ),
 			'coupons'        => __( 'Coupon(s)', 'woocommerce-admin' ),
 			'net_total'      => __( 'N. Revenue', 'woocommerce-admin' ),
 		);

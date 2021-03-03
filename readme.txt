@@ -171,7 +171,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == 1.9.0 1/15/2021 ==
 
-- Fix: Add Customer Type column to the Orders report table. #5820
+- Fix: Add Customer type column to the Orders report table. #5820
 - Fix: Product exclusion filter on Orders Report.
 - Fix: Typo in Variation Stats DataStore context filter value.
 - Fix: support custom attributes in Attribute advanced report filter.
@@ -224,7 +224,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Tasks extensibility in Home Screen. #5794
 - Enhancement: Add page parameter to override default wc-admin page in Navigation API. #5821
 - Fix: Invalidate product count if the last product was updated in the list. #5790
-- Fix: Add Customer Type column to the Orders report table. #5820
+- Fix: Add Customer type column to the Orders report table. #5820
 - Fix: Product exclusion filter on Orders Report. #5822
 - Enhancement: Introduce the customer effort score (CES) feature.
 - Enhancement: Rework task extensibility in the homescreen. #5794
@@ -444,7 +444,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: misaligned 'required' text on selects #4307
 - Fix: exception when opening dashboard after selecting extensions to purchase #4357
 - Fix: REST API collections schema #4377
-- Fix: Monetary Advanced Filters in Customers Report with correct currency object prop. #4356
+- Fix: Monetary Advanced filters in Customers Report with correct currency object prop. #4356
 - Fix: In App purchase "back link" #4301
 - Fix: Search results selectable by clicking on item text or icon #4474
 - Fix: Filters' static query parameters #4458
@@ -950,7 +950,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Task: Tracks: Add chart and table events #2557
 - Fix: Fixes issue with alerts on mobile #2537
 - Bug: Fix batch queue range bug. #2521
-- Dev: Advanced Filters: Add Tracks events #2525 (Components, Packages)
+- Dev: Advanced filters: Add Tracks events #2525 (Components, Packages)
 - Tweak: Open external note action links in a new tab #2462 (Activity Panel, Inbox)
 - Tweak: fix some report endpoint default params. #2496 (REST API)
 - Enhancement: Remove updated stock products from Activity Panel #2442 (Activity Panel)
@@ -1041,7 +1041,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: EllipsisMenu misalignment in wide containers #2207
 - Dev: Handle “all guests” when getting customers from orders. #2038
 - Dev: Order milestones: prevent order count queries from being issues on every request. #2224
-- Dev: Replace Rebuild reports settings with Import Historical Data #2198
+- Dev: Replace Rebuild reports settings with Import historical data #2198
 - Dev: add a defaultValue parameter to the ReportFilters component #2150 👏 @rrennick
 - Dev: Record refunds separate from order entries #2083
 - Dev: Add refund filtering to order reports #2179

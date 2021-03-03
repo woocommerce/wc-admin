@@ -19,21 +19,21 @@ const TAXES_REPORT_ADVANCED_FILTERS_FILTER =
 export const charts = applyFilters( TAXES_REPORT_CHARTS_FILTER, [
 	{
 		key: 'total_tax',
-		label: __( 'Total Tax', 'woocommerce-admin' ),
+		label: __( 'Total tax', 'woocommerce-admin' ),
 		order: 'desc',
 		orderby: 'total_tax',
 		type: 'currency',
 	},
 	{
 		key: 'order_tax',
-		label: __( 'Order Tax', 'woocommerce-admin' ),
+		label: __( 'Order tax', 'woocommerce-admin' ),
 		order: 'desc',
 		orderby: 'order_tax',
 		type: 'currency',
 	},
 	{
 		key: 'shipping_tax',
-		label: __( 'Shipping Tax', 'woocommerce-admin' ),
+		label: __( 'Shipping tax', 'woocommerce-admin' ),
 		order: 'desc',
 		orderby: 'shipping_tax',
 		type: 'currency',
@@ -54,7 +54,7 @@ export const filters = applyFilters( TAXES_REPORT_FILTERS_FILTER, [
 		param: 'filter',
 		showFilters: () => true,
 		filters: [
-			{ label: __( 'All Taxes', 'woocommerce-admin' ), value: 'all' },
+			{ label: __( 'All taxes', 'woocommerce-admin' ), value: 'all' },
 			{
 				label: __( 'Comparison', 'woocommerce-admin' ),
 				value: 'compare-taxes',
