@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Update analytics card header text styles #6506
+
+1. Run this branch
+2. Verify that the analytics card header sizes have been updated, and that the color and sizing are consistent across the experience.
+
 ### Fix double prefixing of navigation URLs #6460
 
 1. Register a navigation menu item with a full URL or admin link.

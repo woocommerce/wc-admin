@@ -67,7 +67,7 @@ export class Leaderboard extends Component {
 			return (
 				<Card className={ classes }>
 					<CardHeader>
-						<Text variant="title.small" as="h3">
+						<Text variant="subtitle" as="h3">
 							{ title }
 						</Text>
 					</CardHeader>

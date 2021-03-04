@@ -27,7 +27,7 @@ class ActivityHeader extends Component {
 		return (
 			<div className={ cardClassName }>
 				<div className="woocommerce-layout__inbox-title">
-					<Text variant="title.small">{ title }</Text>
+					<Text variant="subtitle">{ title }</Text>
 					<Text variant="button">
 						{ countUnread > 0 && (
 							<span className="woocommerce-layout__inbox-badge">
