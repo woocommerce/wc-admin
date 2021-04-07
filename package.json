@@ -169,7 +169,6 @@
 		"@woocommerce/eslint-plugin": "file:packages/eslint-plugin",
 		"@woocommerce/experimental": "file:packages/experimental",
 		"@woocommerce/navigation": "file:packages/navigation",
-		"@woocommerce/notices": "file:packages/notices",
 		"@woocommerce/number": "file:packages/number",
 		"@woocommerce/tracks": "file:packages/tracks",
 		"@wordpress/babel-plugin-makepot": "2.1.3",

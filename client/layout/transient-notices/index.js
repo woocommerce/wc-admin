@@ -13,24 +13,6 @@ import './style.scss';
 
 function TransientNotices( props ) {
 	const { removeNotice: onRemove } = useDispatch( 'core/notices' );
-	const { removeNotice: onRemove2 } = useDispatch( 'core/notices2' );
-	const noticeData = useSelect( ( select ) => {
-		// NOTE: This uses core/notices2, if this file is copied back upstream
-		// to Gutenberg this needs to be changed back to just core/notices.
-		const notices = select( 'core/notices' ).getNotices();
-		const notices2 = select( 'core/notices2' ).getNotices();
-
-		return { notices, notices2 };
-	} );
-
-	/**
-	 * Combines the two notices in the component vs in the useSelect, as we don't want to
-	 * create new object references on each useSelect call.
-	 */
-	const getNotices = () => {
-		const { notices, notices2 = [] } = noticeData;
-		return notices.concat( notices2 );
-	};
 
 	const { className } = props;
 	const classes = classnames(
@@ -38,14 +20,15 @@ function TransientNotices( props ) {
 		'components-notices__snackbar',
 		className
 	);
-	const notices = getNotices();
+	const notices = useSelect( ( select ) =>
+		select( 'core/notices' ).getNotices()
+	);
 
 	return (
 		<SnackbarList
 			notices={ notices }
 			className={ classes }
 			onRemove={ onRemove }
-			onRemove2={ onRemove2 }
 		/>
 	);
 }

@@ -10,7 +10,6 @@ module.exports = [
 	'@woocommerce/eslint-plugin',
 	'@woocommerce/experimental',
 	'@woocommerce/navigation',
-	'@woocommerce/notices',
 	'@woocommerce/number',
 	'@woocommerce/tracks',
 	// wc-blocks packages

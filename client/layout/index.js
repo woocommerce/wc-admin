@@ -18,7 +18,7 @@ import {
 	withOptionsHydration,
 } from '@woocommerce/data';
 import { recordPageView } from '@woocommerce/tracks';
-import '@woocommerce/notices';
+import '@wordpress/notices';
 
 /**
  * Internal dependencies
