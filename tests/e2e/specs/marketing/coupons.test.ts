@@ -3,6 +3,7 @@
  */
  import { Coupons } from '../../pages/Coupons';
  import { Login } from '../../pages/Login';
+import { resetWooCommerceState } from '../../utils/actions';
  
  describe( 'Coupons page', () => {
      const couponsPage = new Coupons( page );
@@ -10,6 +11,7 @@
  
      beforeAll( async () => {
          await login.login();
+		await resetWooCommerceState();
      } );
      afterAll( async () => {
          await login.logout();

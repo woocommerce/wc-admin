@@ -18,6 +18,7 @@ describe( 'Store owner can complete onboarding wizard', () => {
 
 	beforeAll( async () => {
 		await login.login();
+		await resetWooCommerceState();
 	} );
 	afterAll( async () => {
 		await login.logout();
@@ -109,6 +110,7 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 	} );
 
 	it( 'can start the profile wizard', async () => {
+		await resetWooCommerceState();
 		await profileWizard.navigate();
 	} );
 
