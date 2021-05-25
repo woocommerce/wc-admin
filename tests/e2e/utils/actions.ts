@@ -114,6 +114,18 @@ const waitForElementByText = async (
 	return els;
 };
 
+/**
+ * Reset WooCommerce using "WooCommerce Reset" plugin.
+ */
+const resetWooCommerceState = async () => {
+	await page.evaluate(() => {
+		window.wp.apiRequest({
+			path: '/woocommerce-reset/v1/state',
+			method: 'DELETE',
+		});
+	});
+}
+
 export {
 	uiUnblocked,
 	verifyPublishAndTrash,
@@ -122,4 +134,5 @@ export {
 	getElementByText,
 	waitForElementByText,
 	hasClass,
+	resetWooCommerceState,
 };
