@@ -25,7 +25,6 @@ describe( 'Store owner can complete onboarding wizard', () => {
 
 	it( 'can start the profile wizard', async () => {
 		await resetWooCommerceState();
-
 		await profileWizard.navigate();
 	} );
 
