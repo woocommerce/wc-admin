@@ -12,6 +12,7 @@ import {
 import { WcSettings } from '../../pages/WcSettings';
 import { WpSettings } from '../../pages/WpSettings';
 import { Login } from '../../pages/Login';
+import { resetWooCommerceState } from '../../utils/actions';
 
 describe( 'Store owner can finish initial store setup', () => {
 	const wcSettings = new WcSettings( page );
@@ -20,6 +21,7 @@ describe( 'Store owner can finish initial store setup', () => {
 
 	beforeAll( async () => {
 		await login.login();
+		await resetWooCommerceState();
 	} );
 	afterAll( async () => {
 		await login.logout();

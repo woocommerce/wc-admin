@@ -4,7 +4,7 @@
 import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { TaskTitles } from '../../constants/taskTitles';
-import { getElementByText } from '../../utils/actions';
+import { getElementByText, resetWooCommerceState } from '../../utils/actions';
 import { Login } from '../../pages/Login';
 
 const config = require( 'config' );
@@ -18,12 +18,14 @@ describe( 'Store owner can complete onboarding wizard', () => {
 
 	beforeAll( async () => {
 		await login.login();
+		await resetWooCommerceState();
 	} );
 	afterAll( async () => {
 		await login.logout();
 	} );
 
 	it( 'can start the profile wizard', async () => {
+		await resetWooCommerceState();
 		await profileWizard.navigate();
 	} );
 
@@ -108,6 +110,7 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 	} );
 
 	it( 'can start the profile wizard', async () => {
+		await resetWooCommerceState();
 		await profileWizard.navigate();
 	} );
 

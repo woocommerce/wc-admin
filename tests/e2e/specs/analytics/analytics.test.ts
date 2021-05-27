@@ -3,6 +3,7 @@
  */
 import { Analytics } from '../../pages/Analytics';
 import { Login } from '../../pages/Login';
+import { resetWooCommerceState } from '../../utils/actions';
 
 describe( 'Analytics pages', () => {
 	const analyticsPage = new Analytics( page );
@@ -10,6 +11,7 @@ describe( 'Analytics pages', () => {
 
 	beforeAll( async () => {
 		await login.login();
+		await resetWooCommerceState();
 	} );
 	afterAll( async () => {
 		await login.logout();

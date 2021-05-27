@@ -6,6 +6,7 @@ import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { PaymentsSetup } from '../../pages/PaymentsSetup';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { BankAccountTransferSetup } from '../../sections/payment-setup/BankAccountTransferSetup';
+import { resetWooCommerceState } from '../../utils/actions';
 
 describe( 'Payment setup task', () => {
 	const profileWizard = new OnboardingWizard( page );
@@ -16,6 +17,7 @@ describe( 'Payment setup task', () => {
 
 	beforeAll( async () => {
 		await login.login();
+		await resetWooCommerceState();
 
 		// This makes this test more isolated, by always navigating to the
 		// profile wizard and skipping, this behaves the same as if the
