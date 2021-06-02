@@ -230,7 +230,7 @@
 		"recast": "0.20.4",
 		"replace": "1.2.1",
 		"rimraf": "3.0.2",
-		"rtlcss": "2.5.0",
+		"rtlcss": "2.6.2",
 		"sass-loader": "8.0.2",
 		"style-loader": "0.23.1",
 		"stylelint": "9.10.1",
