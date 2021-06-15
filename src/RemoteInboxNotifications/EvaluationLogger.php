@@ -78,6 +78,7 @@ class EvaluationLogger {
 	 * Log the results.
 	 */
 	public function log() {
-		$this->logger->debug( $this->format(), array( 'source' => 'remote-inbox-notifications' ) );
+		true === constant( 'WC_DEBUG_REMOTE_INBOX_NOTIFICATIONS' )
+		&& $this->logger->debug( $this->format(), array( 'source' => 'remote-inbox-notifications' ) );
 	}
 }
