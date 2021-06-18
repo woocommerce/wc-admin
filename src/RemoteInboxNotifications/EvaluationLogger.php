@@ -61,24 +61,16 @@ class EvaluationLogger {
 	}
 
 	/**
-	 * Format the results into json.
-	 *
-	 * @return string
-	 */
-	public function format() {
-		return wp_json_encode(
-			array(
-				'slug'    => $this->slug,
-				'results' => $this->results,
-			)
-		);
-	}
-
-	/**
 	 * Log the results.
 	 */
 	public function log() {
-		true === constant( 'WC_DEBUG_REMOTE_INBOX_NOTIFICATIONS' )
-		&& $this->logger->debug( $this->format(), array( 'source' => 'remote-inbox-notifications' ) );
+		if ( true === constant( 'WC_DEBUG_REMOTE_INBOX_NOTIFICATIONS' ) ) {
+			foreach ( $this->results as $result ) {
+				$this->logger->debug(
+					"[{$this->slug}] {$result['rule']}: {$result['result']}",
+					array( 'source' => 'remote-inbox-notifications' )
+				);
+			}
+		}
 	}
 }
