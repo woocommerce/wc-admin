@@ -71,6 +71,7 @@ class EvaluationLogger {
 					array( 'source' => 'remote-inbox-notifications' )
 				);
 			}
+			$this->logger->debug( "\n" );
 		}
 	}
 }
