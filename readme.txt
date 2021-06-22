@@ -75,6 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Add: Add a logger to Remote Inbox Notifications #7194
 - Fix: WCPay not working in local payments task #7151
 - Fix: Include onboarding settings on the analytic pages #7109
 == 2.4.0 6/10/2021 ==
