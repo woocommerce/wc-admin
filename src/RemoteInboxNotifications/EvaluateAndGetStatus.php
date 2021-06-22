@@ -31,7 +31,9 @@ class EvaluateAndGetStatus {
 
 		$evaluation_logger = new EvaluationLogger( $spec->slug );
 		$evaluated_result  = $rule_evaluator->evaluate( $spec->rules, $stored_state, $evaluation_logger );
-		constant( 'WC_ADMIN_DEBUG_REMOTE_INBOX_NOTIFICATIONS' ) === true && $evaluation_logger->log();
+		defined( 'WC_ADMIN_DEBUG_REMOTE_INBOX_NOTIFICATIONS' )
+		&& true === WC_ADMIN_DEBUG_REMOTE_INBOX_NOTIFICATIONS
+		&& $evaluation_logger->log();
 
 		// Pending notes should be the spec status if the spec passes,
 		// left alone otherwise.
