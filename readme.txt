@@ -121,6 +121,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Show task and activity notifications in the Inbox panel #7017
 - Add: Adding WCPay payment configuration defaults. #7097
 - Add: Create onboarding package to house refactored WCPay card and relevant components #7058
+- Add: Add a logger to Remote Inbox Notifications #7194
 - Dev: Add Jetpack Backup admin note #6738
 - Dev: Reduce the specificity and complexity of the ReportError component #6846
 - Dev: Converting <SettingsForm /> component to TypeScript. #6981

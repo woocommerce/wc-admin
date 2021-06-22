@@ -28,12 +28,13 @@ class RuleEvaluator {
 	 * Evaluate the given rules as an AND operation - return false early if a
 	 * rule evaluates to false.
 	 *
-	 * @param array|object $rules        The rule or rules being processed.
-	 * @param object|null  $stored_state Stored state.
+	 * @param array|object          $rules The rule or rules being processed.
+	 * @param object|null           $stored_state Stored state.
+	 * @param EvaluationLogger|null $evaluation_logger logger to use.
 	 *
 	 * @return bool The result of the operation.
 	 */
-	public function evaluate( $rules, $stored_state = null ) {
+	public function evaluate( $rules, $stored_state = null, EvaluationLogger $evaluation_logger = null ) {
 		if ( ! is_array( $rules ) ) {
 			$rules = array( $rules );
 		}
@@ -45,6 +46,7 @@ class RuleEvaluator {
 		foreach ( $rules as $rule ) {
 			$processor        = $this->get_rule_processor->get_processor( $rule->type );
 			$processor_result = $processor->process( $rule, $stored_state );
+			$evaluation_logger && $evaluation_logger->add_result( $rule->type, $processor_result );
 
 			if ( ! $processor_result ) {
 				return false;
