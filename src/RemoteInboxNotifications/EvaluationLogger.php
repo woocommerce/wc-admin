@@ -64,14 +64,12 @@ class EvaluationLogger {
 	 * Log the results.
 	 */
 	public function log() {
-		if ( true === constant( 'WC_DEBUG_REMOTE_INBOX_NOTIFICATIONS' ) ) {
-			foreach ( $this->results as $result ) {
-				$this->logger->debug(
-					"[{$this->slug}] {$result['rule']}: {$result['result']}",
-					array( 'source' => 'remote-inbox-notifications' )
-				);
-			}
-			$this->logger->debug( "\n" );
+		foreach ( $this->results as $result ) {
+			$this->logger->debug(
+				"[{$this->slug}] {$result['rule']}: {$result['result']}",
+				array( 'source' => 'remote-inbox-notifications' )
+			);
 		}
+		$this->logger->debug( "\n" );
 	}
 }
