@@ -502,7 +502,7 @@ No other values are needed.
 
 You can see the evaluation of each specification by turning on an optional evaluation logger.
 
-1. Define `WC_DEBUG_REMOTE_INBOX_NOTIFICATIONS` constant in `wp-config.php`. `define('WC_DEBUG_REMOTE_INBOX_NOTIFICATIONS', true);`
+1. Define `WC_ADMIN_DEBUG_REMOTE_INBOX_NOTIFICATIONS` constant in `wp-config.php`. `define('WC_ADMIN_DEBUG_REMOTE_INBOX_NOTIFICATIONS', true);`
 2. Run `wc_admin_daily`
 3. cd to `wp-content/uploads/wc-logs/` and check a log file in `remote-inbox-notifications-:date-hash.log` format.
 
