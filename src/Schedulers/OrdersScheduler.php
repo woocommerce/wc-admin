@@ -165,6 +165,12 @@ class OrdersScheduler extends ImportScheduler {
 			CustomersDataStore::sync_order_customer( $order_id ),
 		);
 
+		$order_refunds = $order->get_refunds();
+
+		foreach ( $order_refunds as $refund ) {
+			OrdersStatsDataStore::sync_order( $refund->get_id() );
+		}
+
 		ReportsCache::invalidate();
 	}
 
