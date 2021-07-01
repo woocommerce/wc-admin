@@ -108,7 +108,7 @@ class Homescreen {
 	public function possibly_remove_woocommerce_menu() {
 		global $menu;
 
-		if ( current_user_can( 'edit_others_shop_orders' ) ) {
+		if ( current_user_can( 'manage_woocommerce' ) ) {
 			return;
 		}
 
