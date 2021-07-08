@@ -25,6 +25,7 @@ wp-cli.local.yml
 *.zip
 .idea
 .vscode/
+phpcs.xml
 
 # Composer
 /vendor/
