@@ -1083,7 +1083,7 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 4. Verify that now the associated order number and the related products are visible.
 =======
 ### Fix end date for last periods #6584
-1. We need to be in March 2021
+1. Update your system clock to March 2021
 2. Create a completed order on 29th February 2020
 3. Go to Analytics > Revenue
 4. In the date range filter, select "Last Month" preset and compare to "Previous Year"
