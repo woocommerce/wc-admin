@@ -695,9 +695,6 @@ class Onboarding {
 			return $options;
 		}
 
-		$options[] = 'woocommerce_task_list_welcome_modal_dismissed';
-		$options[] = 'woocommerce_welcome_from_calypso_modal_dismissed';
-		$options[] = 'woocommerce_task_list_prompt_shown';
 		$options[] = 'woocommerce_task_list_tracked_completed_tasks';
 		$options[] = 'woocommerce_task_list_dismissed_tasks';
 

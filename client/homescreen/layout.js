@@ -251,6 +251,12 @@ export default compose(
 				] ) ||
 				isResolving( 'getOption', [
 					'woocommerce_extended_task_list_hidden',
+				] ) ||
+				isResolving( 'getOption', [
+					WELCOME_MODAL_DISMISSED_OPTION_NAME,
+				] ) ||
+				isResolving( 'getOption', [
+					WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME,
 				] ),
 			taskListComplete:
 				! isResolving( 'getOption', [

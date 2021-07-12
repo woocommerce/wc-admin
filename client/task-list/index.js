@@ -267,7 +267,6 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 						}
 						onHide={ () =>
 							updateOptions( {
-								woocommerce_task_list_prompt_shown: true,
 								woocommerce_default_homepage_layout:
 									'two_columns',
 							} )
