@@ -509,7 +509,6 @@ export default compose(
 		const { getOption, isResolving: isOptionResolving } = select(
 			OPTIONS_STORE_NAME
 		);
-
 		const {
 			getActivePlugins,
 			isJetpackConnected,
@@ -550,7 +549,9 @@ export default compose(
 			isOptionResolving( 'getOption', [
 				'woocommerce_setup_jetpack_opted_in',
 			] ) ||
-			jetpackOptIn === undefined;
+			isOptionResolving( 'getOption', [ 'wc_connect_options' ] ) ||
+			jetpackOptIn === undefined ||
+			connectOptions === undefined;
 
 		return {
 			countryCode,

@@ -695,7 +695,6 @@ class Onboarding {
 			return $options;
 		}
 
-		$options[] = 'wc_connect_options';
 		$options[] = 'woocommerce_task_list_welcome_modal_dismissed';
 		$options[] = 'woocommerce_welcome_from_calypso_modal_dismissed';
 		$options[] = 'woocommerce_task_list_prompt_shown';
