@@ -77,17 +77,6 @@ class Homescreen {
 	public function register_page() {
 		// Register a top-level item for users who cannot view the core WooCommerce menu.
 		if ( ! $this->is_admin_user() ) {
-			add_filter(
-				'woocommerce_prevent_admin_access',
-				function( $bool ) {
-					// phpcs:disable WordPress.Security.NonceVerification.Recommended
-					if ( isset( $_GET['page'] ) && 'wc-admin' === $_GET['page'] ) {
-						return false;
-					}
-					return $bool;
-				}
-			);
-
 			wc_admin_register_page(
 				array(
 					'id'         => 'woocommerce-home',
