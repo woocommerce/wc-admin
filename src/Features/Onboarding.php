@@ -214,7 +214,6 @@ class Onboarding {
 		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
 		// New settings injection.
 		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
-		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_admin_preload_settings', array( $this, 'preload_settings' ) );
 		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
 		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_install_notice' ), 10, 2 );
@@ -675,23 +674,6 @@ class Onboarding {
 		$settings['onboarding']['themes']          = self::get_themes();
 
 		return $settings;
-	}
-
-	/**
-	 * Preload options to prime state of the application.
-	 *
-	 * @param array $options Array of options to preload.
-	 * @return array
-	 */
-	public function preload_options( $options ) {
-		if ( ! self::should_show_tasks() && ! self::should_show_profiler() ) {
-			return $options;
-		}
-
-		$options[] = 'woocommerce_task_list_tracked_completed_tasks';
-		$options[] = 'woocommerce_task_list_dismissed_tasks';
-
-		return $options;
 	}
 
 	/**

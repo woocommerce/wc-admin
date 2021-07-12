@@ -91,6 +91,12 @@ const taskDashboardSelect = ( select ) => {
 			] ) ||
 			isResolving( 'getOption', [
 				'woocommerce_task_list_remind_me_later_tasks',
+			] ) ||
+			isResolving( 'getOption', [
+				'woocommerce_task_list_tracked_completed_tasks',
+			] ) ||
+			isResolving( 'getOption', [
+				'woocommerce_task_list_dismissed_tasks',
 			] ),
 	};
 };
