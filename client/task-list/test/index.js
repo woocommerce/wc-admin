@@ -198,6 +198,27 @@ describe( 'TaskDashboard and TaskList', () => {
 		).toBeDefined();
 	} );
 
+	it( 'should show TaskList placeholder when loading', () => {
+		useSelect.mockImplementation( () => ( {
+			isResolving: true,
+		} ) );
+		getAllTasks.mockReturnValue( tasks );
+
+		const { container } = render(
+			<TaskDashboard
+				requestingTaskList
+				bothTaskListsHidden={ false }
+				query={ {} }
+				updateOptions={ () => {} }
+			/>
+		);
+
+		const placeholder = container.querySelector(
+			'.woocommerce-task-card.is-loading'
+		);
+		expect( placeholder ).toBeInTheDocument();
+	} );
+
 	it( 'renders a dismiss button for tasks that are optional and incomplete', async () => {
 		apiFetch.mockResolvedValue( {} );
 		getAllTasks.mockReturnValue( tasks );
