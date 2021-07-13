@@ -8,7 +8,6 @@ import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { addFilter } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -26,29 +25,6 @@ class StockReportTable extends Component {
 		this.getHeadersContent = this.getHeadersContent.bind( this );
 		this.getRowsContent = this.getRowsContent.bind( this );
 		this.getSummary = this.getSummary.bind( this );
-		this.customizeStockStatusForCSVDownload();
-	}
-
-	customizeStockStatusForCSVDownload() {
-		addFilter(
-			'woocommerce_admin_report_table',
-			'analytics/stock',
-			( reportTableData ) => {
-				if ( ! reportTableData.items.data ) {
-					return reportTableData;
-				}
-
-				reportTableData.items.data.map( ( item ) => {
-					const stockStatus = stockStatuses[ item.stock_status ];
-					if ( stockStatus ) {
-						item.stock_status = stockStatus;
-					}
-					return item;
-				} );
-
-				return reportTableData;
-			}
-		);
 	}
 
 	getHeadersContent() {
@@ -143,7 +119,7 @@ class StockReportTable extends Component {
 				},
 				{
 					display: stockStatusLink,
-					value: stockStatus,
+					value: stockStatuses[ stockStatus ],
 				},
 				{
 					display: manageStock
