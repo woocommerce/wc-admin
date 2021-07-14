@@ -348,10 +348,12 @@ const getReportChartDataResponse = memoize(
  * @return {Object}  Object containing API request information (response, fetching, and error details)
  */
 export function getReportChartData( options ) {
-	const { endpoint, select } = options;
-	const { getReportStats, getReportStatsError, isResolving } = select(
-		STORE_NAME
-	);
+	const { endpoint } = options;
+	const {
+		getReportStats,
+		getReportStatsError,
+		isResolving,
+	} = options.selector;
 
 	const requestQuery = getRequestQuery( options );
 	// Disable eslint rule requiring `stats` to be defined below because the next two if statements
@@ -495,10 +497,12 @@ export function getReportTableQuery( options ) {
  * @return {Object} Object    Table data response
  */
 export function getReportTableData( options ) {
-	const { endpoint, select } = options;
-	const { getReportItems, getReportItemsError, isResolving } = select(
-		STORE_NAME
-	);
+	const { endpoint } = options;
+	const {
+		getReportItems,
+		getReportItemsError,
+		isResolving,
+	} = options.selector;
 
 	const tableQuery = reportsUtils.getReportTableQuery( options );
 	const response = {
