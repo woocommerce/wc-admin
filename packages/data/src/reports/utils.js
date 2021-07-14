@@ -342,7 +342,7 @@ const getReportChartDataResponse = memoize(
  * @param  {string} options.endpoint  Report API Endpoint
  * @param  {string} options.dataType  'primary' or 'secondary'
  * @param  {Object} options.query     Query parameters in the url
- * @param  {Object} options.select    Instance of @wordpress/select
+ * @param  {Object} options.selector    Instance of @wordpress/select response
  * @param  {Array}  options.limitBy   Properties used to limit the results. It will be used in the API call to send the IDs.
  * @param  {string}  options.defaultDateRange   User specified default date range.
  * @return {Object}  Object containing API request information (response, fetching, and error details)
@@ -491,7 +491,7 @@ export function getReportTableQuery( options ) {
  * @param  {Object} options                arguments
  * @param  {string} options.endpoint       Report API Endpoint
  * @param  {Object} options.query          Query parameters in the url
- * @param  {Object} options.select         Instance of @wordpress/select
+ * @param  {Object} options.selector       Instance of @wordpress/select response
  * @param  {Object} options.tableQuery     Query parameters specific for that endpoint
  * @param  {string}  options.defaultDateRange   User specified default date range.
  * @return {Object} Object    Table data response
