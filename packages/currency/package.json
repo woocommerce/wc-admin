@@ -23,7 +23,7 @@
 	"dependencies": {
 		"@woocommerce/number": "file:../number",
 		"@wordpress/deprecated": "^2.9.0",
-		"@wordpress/html-entities": "2.10.0"
+		"@wordpress/html-entities": "2.11.2"
 	},
 	"publishConfig": {
 		"access": "public"
