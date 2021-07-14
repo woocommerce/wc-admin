@@ -598,11 +598,7 @@ export default compose(
 			SETTINGS_STORE_NAME
 		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
-		if (
-			isRequesting ||
-			( query.search &&
-				! ( query[ endpoint ] && query[ endpoint ].length ) )
-		) {
+		if ( isRequesting ) {
 			return EMPTY_OBJECT;
 		}
 
