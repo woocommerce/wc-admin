@@ -501,7 +501,7 @@ export function getReportTableData( options ) {
 	const {
 		getReportItems,
 		getReportItemsError,
-		isResolving,
+		hasFinishedResolution,
 	} = options.selector;
 
 	const tableQuery = reportsUtils.getReportTableQuery( options );
@@ -520,9 +520,16 @@ export function getReportTableData( options ) {
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const items = getReportItems( endpoint, tableQuery );
 
-	if ( isResolving( 'getReportItems', [ endpoint, tableQuery ] ) ) {
+	const queryResolved = hasFinishedResolution( 'getReportItems', [
+		endpoint,
+		tableQuery,
+	] );
+
+	if ( ! queryResolved ) {
 		return { ...response, isRequesting: true };
-	} else if ( getReportItemsError( endpoint, tableQuery ) ) {
+	}
+
+	if ( getReportItemsError( endpoint, tableQuery ) ) {
 		return { ...response, isError: true };
 	}
 

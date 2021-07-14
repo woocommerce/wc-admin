@@ -584,10 +584,15 @@ export default compose(
 			filters,
 			advancedFilters,
 			summaryFields,
+			extendedItemsStoreName,
 		} = props;
 
 		/* eslint @wordpress/no-unused-vars-before-return: "off" */
 		const reportStoreSelector = select( REPORTS_STORE_NAME );
+
+		const extendedStoreSelector = extendedItemsStoreName
+			? select( extendedItemsStoreName )
+			: null;
 
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
@@ -626,11 +631,10 @@ export default compose(
 				advancedFilters,
 				defaultDateRange,
 			} );
-		const extendedTableData = extendTableData(
-			select,
-			props,
-			queriedTableData
-		);
+
+		const extendedTableData = extendedStoreSelector
+			? extendTableData( extendedStoreSelector, props, queriedTableData )
+			: queriedTableData;
 
 		return {
 			primaryData,
