@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Fix `getIdsFromQuery` support for `0` as a valid id.
+- Add `getIdsSetFromQuery` util.
 
 # 6.0.1
 
