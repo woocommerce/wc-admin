@@ -43,7 +43,6 @@ class Controller extends \WC_REST_Reports_Controller implements ExportableInterf
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct();
 		$this->status_options = wc_get_product_stock_status_options();
 	}
 
