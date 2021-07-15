@@ -209,7 +209,6 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 		$rest_server = rest_get_server();
 		$report_data = $rest_server->response_to_data( $response, true );
 		remove_filter( 'woocommerce_rest_check_permissions', '__return_true' );
-		$report_data = $this->update_stock_status_for_export( $report_data );
 
 		$report_meta      = $response->get_headers();
 		$this->total_rows = $report_meta['X-WP-Total'];
@@ -274,23 +273,5 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 		}
 
 		return apply_filters( "woocommerce_export_{$this->export_type}_row_data", $row, $item );
-	}
-
-	/**
-	 * Update $item stock_status from wc_get_product_stock_status_options() data.
-	 *
-	 * @param array $items report data.
-	 *
-	 * @return array report data array with 'stock_status' updated.
-	 */
-	protected function update_stock_status_for_export( $items ) {
-		$stock_statuses = wc_get_product_stock_status_options();
-		foreach ( $items as &$item ) {
-			if ( array_key_exists( $item['stock_status'], $stock_statuses ) ) {
-				$item['stock_status'] = $stock_statuses[ $item['stock_status'] ];
-			}
-		}
-
-		return $items;
 	}
 }
