@@ -1,3 +1,7 @@
+# Unreleased
+
+- Add `hidden` legend position to `Chart`. #7378
+
 # 8.0.0
 
 -   Fix commonjs module build, allow package to be built in isolation. #7286
