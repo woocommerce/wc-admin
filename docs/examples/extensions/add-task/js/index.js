@@ -93,7 +93,7 @@ addFilter(
 				isDismissable: true,
 				onDelete: () => console.log( 'The task was deleted' ),
 				onDismiss: () => console.log( 'The task was dismissed' ),
-				allowRemindMeLater: true,
+				isSnoozable: true,
 				remindMeLater: () => console.log( 'Remind me later' ),
 			},
 		];

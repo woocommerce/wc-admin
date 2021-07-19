@@ -14,6 +14,7 @@ import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { SETTINGS_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
@@ -23,7 +24,7 @@ import { getCountryCode } from '../../../dashboard/utils';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
 import { createNoticesFromResponse } from '../../../lib/notices';
-
+import { WooOnboardingTask } from '../../utils';
 export class Shipping extends Component {
 	constructor( props ) {
 		super( props );
@@ -328,7 +329,7 @@ export class Shipping extends Component {
 	}
 }
 
-export default compose(
+const ShippingWrapper = compose(
 	withSelect( ( select ) => {
 		const { getSettings, isUpdateSettingsRequesting } = select(
 			SETTINGS_STORE_NAME
@@ -370,3 +371,11 @@ export default compose(
 		};
 	} )
 )( Shipping );
+
+registerPlugin( 'wc-admin-onboarding-task-shipping', {
+	render: () => (
+		<WooOnboardingTask id="shipping">
+			<ShippingWrapper />;
+		</WooOnboardingTask>
+	),
+} );

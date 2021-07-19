@@ -15,11 +15,13 @@ import {
 import { List, Pill } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
+import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
  */
 import ProductTemplateModal from './product-template-modal';
+import { WooOnboardingTask } from '../../utils';
 
 const subTasks = [
 	{
@@ -88,7 +90,7 @@ const subTasks = [
 	},
 ];
 
-export default function Products() {
+export const Products = () => {
 	const [ selectTemplate, setSelectTemplate ] = useState( null );
 
 	const onTaskClick = ( task ) => {
@@ -117,4 +119,12 @@ export default function Products() {
 			) : null }
 		</Fragment>
 	);
-}
+};
+
+registerPlugin( 'wc-admin-onboarding-task-products', {
+	render: () => (
+		<WooOnboardingTask id="products">
+			<Products />;
+		</WooOnboardingTask>
+	),
+} );

@@ -10,6 +10,7 @@ import {
 	PAYMENT_GATEWAYS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { registerPlugin } from '@wordpress/plugins';
 import { useMemo, useCallback } from '@wordpress/element';
 
 /**
@@ -18,6 +19,7 @@ import { useMemo, useCallback } from '@wordpress/element';
 import { List, Placeholder as ListPlaceholder } from './components/List';
 import { Setup, Placeholder as SetupPlaceholder } from './components/Setup';
 import { WCPaySuggestion } from './components/WCPay';
+import { WooOnboardingTask } from '../../utils';
 import './plugins/Bacs';
 
 export const PaymentGatewaySuggestions = ( { query } ) => {
@@ -226,4 +228,10 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 	);
 };
 
-export default PaymentGatewaySuggestions;
+registerPlugin( 'wc-admin-onboarding-task-payments', {
+	render: () => (
+		<WooOnboardingTask id="payments">
+			<PaymentGatewaySuggestions />;
+		</WooOnboardingTask>
+	),
+} );

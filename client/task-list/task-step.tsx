@@ -8,7 +8,7 @@ import { PLUGINS_STORE_NAME, WCDataSelector } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { recordTaskViewEvent } from './tasks';
+import { recordTaskViewEvent, WooOnboardingTask } from './utils';
 
 type TaskStepProps = {
 	taskContainer?: React.ReactElement;
@@ -19,6 +19,7 @@ export const TaskStep: React.FC< TaskStepProps > = ( {
 	taskContainer,
 	query,
 } ) => {
+	const { task: id } = query;
 	const prevTaskRef = useRef< string >();
 	const { isJetpackConnected, activePlugins, installedPlugins } = useSelect(
 		( select: WCDataSelector ) => {
@@ -37,14 +38,12 @@ export const TaskStep: React.FC< TaskStepProps > = ( {
 	);
 
 	const recordTaskView = () => {
-		const { task: taskName } = query;
-
-		if ( ! taskName ) {
+		if ( ! id ) {
 			return;
 		}
 
 		recordTaskViewEvent(
-			taskName,
+			id,
 			isJetpackConnected,
 			activePlugins,
 			installedPlugins
@@ -52,22 +51,25 @@ export const TaskStep: React.FC< TaskStepProps > = ( {
 	};
 
 	useEffect( () => {
-		const { task } = query;
-		if ( prevTaskRef.current !== task ) {
+		if ( prevTaskRef.current !== id ) {
 			window.document.documentElement.scrollTop = 0;
 		}
-		prevTaskRef.current = task;
+		prevTaskRef.current = id;
 		recordTaskView();
 	}, [ query ] );
 
-	if ( ! taskContainer || ! query.task ) {
+	if ( ! id ) {
 		return null;
 	}
+
 	return (
 		<div className="woocommerce-task-dashboard__container">
-			{ cloneElement( taskContainer, {
-				query,
-			} ) }
+			<WooOnboardingTask.Slot
+				fillProps={ {
+					query,
+				} }
+				id={ id }
+			/>
 		</div>
 	);
 };

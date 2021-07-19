@@ -6,39 +6,33 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { EllipsisMenu, Badge } from '@woocommerce/components';
-import { updateQueryString } from '@woocommerce/navigation';
+import {
+	getHistory,
+	getNewPath,
+	updateQueryString,
+} from '@woocommerce/navigation';
 import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import {
-	Text,
-	List,
-	CollapsibleList,
-	TaskItem,
-} from '@woocommerce/experimental';
+import { Text, List, CollapsibleList } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
  */
+import { TaskListItem } from './task-list-item';
 import './task-list.scss';
-
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const TaskList = ( {
 	query,
 	name,
 	eventName,
 	isComplete,
-	dismissedTasks,
-	remindMeLaterTasks,
 	tasks,
-	trackedCompletedTasks: totalTrackedCompletedTasks,
 	title: listTitle,
 	collapsible = false,
 	onComplete,
 	onHide,
 	expandingItems = false,
 } ) => {
-	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { profileItems } = useSelect( ( select ) => {
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
@@ -63,27 +57,22 @@ export const TaskList = ( {
 		}
 
 		possiblyCompleteTaskList();
-		possiblyTrackCompletedTasks();
 	}, [ query ] );
 
 	const nowTimestamp = Date.now();
 	const visibleTasks = tasks.filter(
 		( task ) =>
-			task.visible &&
-			! dismissedTasks.includes( task.key ) &&
-			( ! remindMeLaterTasks[ task.key ] ||
-				remindMeLaterTasks[ task.key ] < nowTimestamp )
+			task.isVisible &&
+			! task.isDismissed &&
+			( ! task.snoozedUntil || task.snoozedUntil < nowTimestamp )
 	);
 
 	const completedTaskKeys = visibleTasks
-		.filter( ( task ) => task.completed )
+		.filter( ( task ) => task.isComplete )
 		.map( ( task ) => task.key );
 
 	const incompleteTasks = tasks.filter(
-		( task ) =>
-			task.visible &&
-			! task.completed &&
-			! dismissedTasks.includes( task.key )
+		( task ) => task.isVisible && ! task.isComplete && ! task.isDismissed
 	);
 
 	const [ currentTask, setCurrentTask ] = useState(
@@ -108,124 +97,6 @@ export const TaskList = ( {
 				onComplete();
 			}
 		}
-	};
-
-	const getTrackedIncompletedTasks = (
-		partialCompletedTasks,
-		allTrackedTask
-	) => {
-		return visibleTasks
-			.filter(
-				( task ) =>
-					allTrackedTask.includes( task.key ) &&
-					! partialCompletedTasks.includes( task.key )
-			)
-			.map( ( task ) => task.key );
-	};
-
-	const possiblyTrackCompletedTasks = () => {
-		const trackedCompletedTasks = getTrackedCompletedTasks(
-			completedTaskKeys,
-			totalTrackedCompletedTasks
-		);
-
-		const trackedIncompleteTasks = getTrackedIncompletedTasks(
-			trackedCompletedTasks,
-			totalTrackedCompletedTasks
-		);
-
-		if (
-			shouldUpdateCompletedTasks(
-				trackedCompletedTasks,
-				trackedIncompleteTasks,
-				completedTaskKeys
-			)
-		) {
-			updateOptions( {
-				woocommerce_task_list_tracked_completed_tasks: getTasksForUpdate(
-					completedTaskKeys,
-					totalTrackedCompletedTasks,
-					trackedIncompleteTasks
-				),
-			} );
-		}
-	};
-
-	const dismissTask = ( { key, onDismiss } ) => {
-		createNotice( 'success', __( 'Task dismissed' ), {
-			actions: [
-				{
-					label: __( 'Undo', 'woocommerce-admin' ),
-					onClick: () => undoDismissTask( key ),
-				},
-			],
-		} );
-
-		recordEvent( `${ eventName }_dismiss_task`, { task_name: key } );
-
-		updateOptions( {
-			woocommerce_task_list_dismissed_tasks: [ ...dismissedTasks, key ],
-		} );
-		if ( onDismiss ) {
-			onDismiss();
-		}
-	};
-
-	const undoDismissTask = ( key ) => {
-		const updatedDismissedTasks = dismissedTasks.filter(
-			( task ) => task !== key
-		);
-
-		updateOptions( {
-			woocommerce_task_list_dismissed_tasks: updatedDismissedTasks,
-		} );
-		recordEvent( `${ eventName }_undo_dismiss_task`, {
-			task_name: key,
-		} );
-	};
-
-	const remindTaskLater = ( { key, onDismiss } ) => {
-		createNotice(
-			'success',
-			__( 'Task postponed until tomorrow', 'woocommerce-admin' ),
-			{
-				actions: [
-					{
-						label: __( 'Undo', 'woocommerce-admin' ),
-						onClick: () => undoRemindTaskLater( key ),
-					},
-				],
-			}
-		);
-		recordEvent( `${ eventName }_remindmelater_task`, {
-			task_name: key,
-		} );
-
-		const dismissTime = Date.now() + DAY_IN_MS;
-		updateOptions( {
-			woocommerce_task_list_remind_me_later_tasks: {
-				...remindMeLaterTasks,
-				[ key ]: dismissTime,
-			},
-		} );
-		if ( onDismiss ) {
-			onDismiss();
-		}
-	};
-
-	const undoRemindTaskLater = ( key ) => {
-		const {
-			// eslint-disable-next-line no-unused-vars
-			[ key ]: oldValue,
-			...updatedRemindMeLaterTasks
-		} = remindMeLaterTasks;
-
-		updateOptions( {
-			woocommerce_task_list_remind_me_later_tasks: updatedRemindMeLaterTasks,
-		} );
-		recordEvent( `${ eventName }_undo_remindmelater_task`, {
-			task_name: key,
-		} );
 	};
 
 	const recordTaskListView = () => {
@@ -288,7 +159,18 @@ export const TaskList = ( {
 					return false;
 				}
 
-				updateQueryString( { task: task.key } );
+				if ( task.actionUrl ) {
+					if ( task.actionUrl.startsWith( 'http' ) ) {
+						window.location = task.actionUrl;
+					} else {
+						getHistory().push(
+							getNewPath( {}, task.actionUrl, {} )
+						);
+					}
+					return;
+				}
+
+				updateQueryString( { task: task.id } );
 			};
 		}
 
@@ -345,36 +227,13 @@ export const TaskList = ( {
 					<CardBody>
 						<ListComp animation="custom" { ...listProps }>
 							{ listTasks.map( ( task ) => (
-								<TaskItem
-									key={ task.key }
-									title={ task.title }
-									completed={ task.completed }
-									content={ task.content }
-									onClick={
-										! expandingItems || task.completed
-											? task.onClick
-											: () => setCurrentTask( task.key )
-									}
-									expandable={ expandingItems }
-									expanded={
-										expandingItems &&
-										currentTask === task.key
-									}
-									onDismiss={
-										task.isDismissable
-											? () => dismissTask( task )
-											: undefined
-									}
-									remindMeLater={
-										task.allowRemindMeLater
-											? () => remindTaskLater( task )
-											: undefined
-									}
-									time={ task.time }
-									level={ task.level }
-									action={ task.onClick }
-									actionLabel={ task.action }
-									additionalInfo={ task.additionalInfo }
+								<TaskListItem
+									key={ task.id }
+									currentTask={ currentTask }
+									eventName={ eventName }
+									expandingItems={ expandingItems }
+									task={ task }
+									setCurrentTask={ setCurrentTask }
 								/>
 							) ) }
 						</ListComp>
@@ -384,39 +243,5 @@ export const TaskList = ( {
 		</>
 	);
 };
-
-function shouldUpdateCompletedTasks( tasks, untrackedTasks, completedTasks ) {
-	if ( untrackedTasks.length > 0 ) {
-		return true;
-	}
-	if ( completedTasks.length === 0 ) {
-		return false;
-	}
-	return ! completedTasks.every(
-		( taskName ) => tasks.indexOf( taskName ) >= 0
-	);
-}
-
-function getTrackedCompletedTasks( completedTasks, trackedTasks ) {
-	if ( ! trackedTasks ) {
-		return [];
-	}
-	return completedTasks.filter( ( taskName ) =>
-		trackedTasks.includes( taskName )
-	);
-}
-
-function getTasksForUpdate(
-	completedTaskKeys,
-	totalTrackedCompletedTasks,
-	trackedIncompleteTasks
-) {
-	const mergedLists = [
-		...new Set( [ ...completedTaskKeys, ...totalTrackedCompletedTasks ] ),
-	];
-	return mergedLists.filter(
-		( taskName ) => ! trackedIncompleteTasks.includes( taskName )
-	);
-}
 
 export default TaskList;
