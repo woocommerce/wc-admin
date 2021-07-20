@@ -140,54 +140,6 @@ const installableExtensionsData = [
 			},
 		],
 	},
-	{
-		title: __( 'Grow your store', 'woocommerce-admin' ),
-		key: 'grow',
-		plugins: [
-			{
-				key: 'mailpoet',
-				description: generatePluginDescriptionWithLink(
-					__(
-						'Level up your email marketing with {{link}}MailPoet{{/link}}',
-						'woocommerce-admin'
-					),
-					'mailpoet',
-					'https://wordpress.org/plugins/mailpoet/'
-				),
-			},
-			{
-				key: 'google-listings-and-ads',
-				description: generatePluginDescriptionWithLink(
-					__(
-						'Drive sales with {{link}}Google Listings and Ads{{/link}}',
-						'woocommerce-admin'
-					),
-					'google-listings-and-ads'
-				),
-			},
-			{
-				key: 'mailchimp-for-woocommerce',
-				description: generatePluginDescriptionWithLink(
-					__(
-						'Contact customers with {{link}}Mailchimp{{/link}}',
-						'woocommerce-admin'
-					),
-					'mailchimp-for-woocommerce'
-				),
-			},
-			{
-				key: 'creative-mail-by-constant-contact',
-				description: generatePluginDescriptionWithLink(
-					__(
-						'Emails made easy with {{link}}Creative Mail{{/link}}',
-						'woocommerce-admin'
-					),
-					'creative-mail-for-woocommerce'
-				),
-				selected: false,
-			},
-		],
-	},
 ];
 
 const FreeBadge = () => {
