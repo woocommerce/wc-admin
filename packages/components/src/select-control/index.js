@@ -3,15 +3,11 @@
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
-import { useState, useEffect, useRef, createElement } from '@wordpress/element';
-import { escapeRegExp, identity, noop } from 'lodash';
+import { Component, createElement } from '@wordpress/element';
+import { debounce, escapeRegExp, identity, noop } from 'lodash';
 import PropTypes from 'prop-types';
-import {
-	__experimentalUseFocusOutside as useFocusOutside,
-	useDebounce,
-	useInstanceId,
-} from '@wordpress/compose';
-import { speak } from '@wordpress/a11y';
+import { withFocusOutside, withSpokenMessages } from '@wordpress/components';
+import { withInstanceId, compose } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -20,64 +16,66 @@ import List from './list';
 import Tags from './tags';
 import Control from './control';
 
-function SelectControl( {
-	selected,
-	options,
-	excludeSelectedOptions,
-	multiple,
-	...props
-} ) {
-	const instanceId = useInstanceId( SelectControl );
-	const [ isExpanded, setIsExpanded ] = useState( false );
-	const [ isFocused, setIsFocused ] = useState( false );
-	const [ query, setQuery ] = useState( '' );
-	const [ searchOptions, setSearchOptions ] = useState( [] );
-	const [ selectedIndex, setSelectedIndex ] = useState(
-		selected && options?.length && ! excludeSelectedOptions
-			? options.findIndex( ( option ) => option.key === selected )
-			: null
-	);
-	const selectControlRef = useRef();
+const initialState = { isExpanded: false, isFocused: false, query: '' };
 
-	useEffect( () => {
-		const newSelectedIndex =
-			selected && options?.length && ! excludeSelectedOptions
-				? options.findIndex( ( option ) => option.key === selected )
-				: null;
-		if ( newSelectedIndex !== selectedIndex ) {
-			setSelectedIndex( newSelectedIndex );
-		}
-	}, [ selected, options, excludeSelectedOptions ] );
+/**
+ * A search box which filters options while typing,
+ * allowing a user to select from an option from a filtered list.
+ */
+export class SelectControl extends Component {
+	constructor( props ) {
+		super( props );
 
-	const useFocusOutsideProps = useFocusOutside( () => {
-		reset();
-	} );
+		const { selected, options, excludeSelectedOptions } = props;
+		this.state = {
+			...initialState,
+			searchOptions: [],
+			selectedIndex:
+				selected && options?.length && ! excludeSelectedOptions
+					? options.findIndex( ( option ) => option.key === selected )
+					: null,
+		};
 
-	const getSelected = () => {
-		// Return the passed value if an array is provided.
-		if ( multiple || Array.isArray( selected ) ) {
-			return selected;
-		}
-
-		const selectedOption = options.find(
-			( option ) => option.key === selected
+		this.bindNode = this.bindNode.bind( this );
+		this.decrementSelectedIndex = this.decrementSelectedIndex.bind( this );
+		this.incrementSelectedIndex = this.incrementSelectedIndex.bind( this );
+		this.onAutofillChange = this.onAutofillChange.bind( this );
+		this.updateSearchOptions = debounce(
+			this.updateSearchOptions.bind( this ),
+			props.searchDebounceTime
 		);
-		return selectedOption ? [ selectedOption ] : [];
-	};
+		this.search = this.search.bind( this );
+		this.selectOption = this.selectOption.bind( this );
+		this.setExpanded = this.setExpanded.bind( this );
+		this.setNewValue = this.setNewValue.bind( this );
+	}
 
-	const reset = ( selected = getSelected() ) => {
+	bindNode( node ) {
+		this.node = node;
+	}
+
+	reset( selected = this.getSelected() ) {
+		const { multiple, excludeSelectedOptions } = this.props;
+		const newState = { ...initialState };
 		// Reset selectedIndex if single selection.
 		if ( ! multiple && selected.length && selected[ 0 ].key ) {
-			const newSelectedIndex = ! excludeSelectedOptions
-				? options.findIndex( ( i ) => i.key === selected[ 0 ].key )
+			newState.selectedIndex = ! excludeSelectedOptions
+				? this.props.options.findIndex(
+						( i ) => i.key === selected[ 0 ].key
+				  )
 				: null;
-			setSelectedIndex( newSelectedIndex );
 		}
-		setIsExpanded( false );
-		setIsFocused( false );
-	};
 
-	const hasMultiple = () => {
+		this.setState( newState );
+	}
+
+	handleFocusOutside() {
+		this.reset();
+	}
+
+	hasMultiple() {
+		const { multiple, selected } = this.props;
+
 		if ( ! multiple ) {
 			return false;
 		}
@@ -87,36 +85,27 @@ function SelectControl( {
 		}
 
 		return Boolean( selected );
-	};
+	}
 
-	const getOptions = () => {
-		const { isSearchable } = props;
-		const selectedKeys = getSelected().map( ( option ) => option.key );
-		const shownOptions = isSearchable ? searchOptions : options;
+	getSelected() {
+		const { multiple, options, selected } = this.props;
 
-		if ( excludeSelectedOptions ) {
-			return shownOptions.filter(
-				( option ) => ! selectedKeys.includes( option.key )
-			);
-		}
-		return shownOptions;
-	};
-
-	const triggerOnChange = ( newValue ) => {
-		const { onChange } = props;
-		// Trigger a change if the selected value is different and pass back
-		// an array or string depending on the original value.
+		// Return the passed value if an array is provided.
 		if ( multiple || Array.isArray( selected ) ) {
-			onChange( newValue, query );
-		} else {
-			onChange( newValue.length > 0 ? newValue[ 0 ].key : '', query );
+			return selected;
 		}
-	};
 
-	const selectOption = ( option ) => {
+		const selectedOption = options.find(
+			( option ) => option.key === selected
+		);
+		return selectedOption ? [ selectedOption ] : [];
+	}
+
+	selectOption( option ) {
+		const { multiple, selected } = this.props;
 		const newSelected = multiple ? [ ...selected, option ] : [ option ];
 
-		reset( newSelected );
+		this.reset( newSelected );
 
 		const oldSelected = Array.isArray( selected )
 			? selected
@@ -125,39 +114,55 @@ function SelectControl( {
 			( val ) => val.key === option.key
 		);
 		if ( isSelected === -1 ) {
-			triggerOnChange( newSelected );
+			this.setNewValue( newSelected );
 		}
 
 		// After selecting option, the list will reset and we'd need to correct selectedIndex.
-		const newSelectedIndex = excludeSelectedOptions
+		const newSelectedIndex = this.props.excludeSelectedOptions
 			? // Since we're excluding the selected option, invalidate selection
 			  // so re-focusing wont immediately set it to the neigbouring option.
 			  null
-			: getOptions().findIndex( ( i ) => i.key === option.key );
+			: this.getOptions().findIndex( ( i ) => i.key === option.key );
 
-		setSelectedIndex( newSelectedIndex );
-	};
+		this.setState( {
+			selectedIndex: newSelectedIndex,
+		} );
+	}
 
-	const decrementSelectedIndex = () => {
-		const options = getOptions();
+	setNewValue( newValue ) {
+		const { onChange, selected, multiple } = this.props;
+		const { query } = this.state;
+		// Trigger a change if the selected value is different and pass back
+		// an array or string depending on the original value.
+		if ( multiple || Array.isArray( selected ) ) {
+			onChange( newValue, query );
+		} else {
+			onChange( newValue.length > 0 ? newValue[ 0 ].key : '', query );
+		}
+	}
+
+	decrementSelectedIndex() {
+		const { selectedIndex } = this.state;
+		const options = this.getOptions();
 		const nextSelectedIndex =
 			selectedIndex !== null
 				? ( selectedIndex === 0 ? options.length : selectedIndex ) - 1
 				: options.length - 1;
 
-		setSelectedIndex( nextSelectedIndex );
-	};
+		this.setState( { selectedIndex: nextSelectedIndex } );
+	}
 
-	const incrementSelectedIndex = () => {
-		const options = getOptions();
+	incrementSelectedIndex() {
+		const { selectedIndex } = this.state;
+		const options = this.getOptions();
 		const nextSelectedIndex =
 			selectedIndex !== null ? ( selectedIndex + 1 ) % options.length : 0;
 
-		setSelectedIndex( nextSelectedIndex );
-	};
+		this.setState( { selectedIndex: nextSelectedIndex } );
+	}
 
-	const debouncedSpeak = useDebounce( speak, 500 );
-	const announce = ( searchOptions ) => {
+	announce( searchOptions ) {
+		const { debouncedSpeak } = this.props;
 		if ( ! debouncedSpeak ) {
 			return;
 		}
@@ -180,10 +185,24 @@ function SelectControl( {
 				'assertive'
 			);
 		}
-	};
+	}
 
-	const getOptionsByQuery = ( options, query ) => {
-		const { getSearchExpression, maxResults, onFilter } = props;
+	getOptions() {
+		const { isSearchable, options, excludeSelectedOptions } = this.props;
+		const { searchOptions } = this.state;
+		const selectedKeys = this.getSelected().map( ( option ) => option.key );
+		const shownOptions = isSearchable ? searchOptions : options;
+
+		if ( excludeSelectedOptions ) {
+			return shownOptions.filter(
+				( option ) => ! selectedKeys.includes( option.key )
+			);
+		}
+		return shownOptions;
+	}
+
+	getOptionsByQuery( options, query ) {
+		const { getSearchExpression, maxResults, onFilter } = this.props;
 		const filtered = [];
 
 		// Create a regular expression to filter the options.
@@ -217,144 +236,169 @@ function SelectControl( {
 		}
 
 		return onFilter( filtered, query );
-	};
+	}
 
-	const cacheSearchOptionsRef = useRef( [] );
-	const search = ( query ) => {
-		const cacheSearchOptions = cacheSearchOptionsRef.current || [];
+	setExpanded( value ) {
+		this.setState( { isExpanded: value } );
+	}
+
+	search( query ) {
+		const cacheSearchOptions = this.cacheSearchOptions || [];
 		const searchOptions =
-			query !== null && ! query.length && ! props.hideBeforeSearch
+			query !== null && ! query.length && ! this.props.hideBeforeSearch
 				? cacheSearchOptions
-				: getOptionsByQuery( cacheSearchOptions, query );
+				: this.getOptionsByQuery( cacheSearchOptions, query );
 
-		setQuery( query );
-		setIsFocused( true );
-		setSearchOptions( searchOptions );
-		setSelectedIndex( query?.length > 0 ? null : selectedIndex );
-		setIsExpanded( Boolean( getOptions().length ) );
+		this.setState(
+			{
+				query,
+				isFocused: true,
+				searchOptions,
+				selectedIndex:
+					query?.length > 0 ? null : this.state.selectedIndex, // Only reset selectedIndex if we're actually searching.
+			},
+			() => {
+				this.setState( {
+					isExpanded: Boolean( this.getOptions().length ),
+				} );
+			}
+		);
 
-		updateSearchOptions( query );
-	};
+		this.updateSearchOptions( query );
+	}
 
-	const activePromiseRef = useRef();
-	const updateSearchOptions = useDebounce( ( query ) => {
-		const { hideBeforeSearch, onSearch } = props;
+	updateSearchOptions( query ) {
+		const { hideBeforeSearch, options, onSearch } = this.props;
 
-		const promise = ( activePromiseRef.current = Promise.resolve(
+		const promise = ( this.activePromise = Promise.resolve(
 			onSearch( options, query )
 		).then( ( promiseOptions ) => {
-			if ( promise !== activePromiseRef.current ) {
+			if ( promise !== this.activePromise ) {
 				// Another promise has become active since this one was asked to resolve, so do nothing,
 				// or else we might end triggering a race condition updating the state.
 				return;
 			}
 
-			cacheSearchOptionsRef.current = promiseOptions;
+			this.cacheSearchOptions = promiseOptions;
 
 			// Get all options if `hideBeforeSearch` is enabled and query is not null.
 			const searchOptions =
 				query !== null && ! query.length && ! hideBeforeSearch
 					? promiseOptions
-					: getOptionsByQuery( promiseOptions, query );
+					: this.getOptionsByQuery( promiseOptions, query );
 
-			setSearchOptions( searchOptions );
-			setSelectedIndex( query?.length > 0 ? null : selectedIndex );
-			setIsExpanded( Boolean( getOptions().length ) );
-			announce( searchOptions );
+			this.setState(
+				{
+					searchOptions,
+					selectedIndex:
+						query?.length > 0 ? null : this.state.selectedIndex, // Only reset selectedIndex if we're actually searching.
+				},
+				() => {
+					this.setState( {
+						isExpanded: Boolean( this.getOptions().length ),
+					} );
+					this.announce( searchOptions );
+				}
+			);
 		} ) );
-	}, props.searchDebounceTime );
+	}
 
-	const onAutofillChange = ( event ) => {
-		const searchOptions = getOptionsByQuery( options, event.target.value );
+	onAutofillChange( event ) {
+		const { options } = this.props;
+		const searchOptions = this.getOptionsByQuery(
+			options,
+			event.target.value
+		);
 
 		if ( searchOptions.length === 1 ) {
-			selectOption( searchOptions[ 0 ] );
+			this.selectOption( searchOptions[ 0 ] );
 		}
-	};
+	}
 
-	const {
-		autofill,
-		children,
-		className,
-		disabled,
-		controlClassName,
-		inlineTags,
-		isSearchable,
-	} = props;
+	render() {
+		const {
+			autofill,
+			children,
+			className,
+			disabled,
+			controlClassName,
+			inlineTags,
+			instanceId,
+			isSearchable,
+			options,
+		} = this.props;
+		const { isExpanded, isFocused, selectedIndex } = this.state;
 
-	const hasMultipleItems = hasMultiple();
-	const { key: selectedKey = '' } = options[ selectedIndex ] || {};
-	const listboxId = isExpanded
-		? `woocommerce-select-control__listbox-${ instanceId }`
-		: null;
-	const activeId = isExpanded
-		? `woocommerce-select-control__option-${ instanceId }-${ selectedKey }`
-		: null;
-	return (
-		<div
-			className={ classnames( 'woocommerce-select-control', className, {
-				'has-inline-tags': hasMultipleItems && inlineTags,
-				'is-focused': isFocused,
-				'is-searchable': isSearchable,
-			} ) }
-			{ ...useFocusOutsideProps }
-			ref={ selectControlRef }
-		>
-			{ autofill && (
-				<input
-					onChange={ onAutofillChange }
-					name={ autofill }
-					type="text"
-					className="woocommerce-select-control__autofill-input"
-					tabIndex="-1"
-				/>
-			) }
-			{ children }
-			<Control
-				{ ...props }
-				isExpanded={ isExpanded }
-				isFocused={ isFocused }
-				selectedIndex={ selectedIndex }
-				searchOptions={ searchOptions }
-				query={ query }
-				activeId={ activeId }
-				className={ controlClassName }
-				disabled={ disabled }
-				hasTags={ hasMultipleItems }
-				isExpanded={ isExpanded }
-				listboxId={ listboxId }
-				onSearch={ search }
-				selected={ getSelected() }
-				onChange={ triggerOnChange }
-				setExpanded={ setIsExpanded }
-				updateSearchOptions={ updateSearchOptions }
-				decrementSelectedIndex={ decrementSelectedIndex }
-				incrementSelectedIndex={ incrementSelectedIndex }
-			/>
-			{ ! inlineTags && hasMultipleItems && (
-				<Tags { ...props } selected={ getSelected() } />
-			) }
-			{ isExpanded && (
-				<List
-					{ ...props }
-					isExpanded={ isExpanded }
-					isFocused={ isFocused }
-					selectedIndex={ selectedIndex }
-					searchOptions={ searchOptions }
-					query={ query }
+		const hasMultiple = this.hasMultiple();
+		const { key: selectedKey = '' } = options[ selectedIndex ] || {};
+		const listboxId = isExpanded
+			? `woocommerce-select-control__listbox-${ instanceId }`
+			: null;
+		const activeId = isExpanded
+			? `woocommerce-select-control__option-${ instanceId }-${ selectedKey }`
+			: null;
+
+		return (
+			<div
+				className={ classnames(
+					'woocommerce-select-control',
+					className,
+					{
+						'has-inline-tags': hasMultiple && inlineTags,
+						'is-focused': isFocused,
+						'is-searchable': isSearchable,
+					}
+				) }
+				ref={ this.bindNode }
+			>
+				{ autofill && (
+					<input
+						onChange={ this.onAutofillChange }
+						name={ autofill }
+						type="text"
+						className="woocommerce-select-control__autofill-input"
+						tabIndex="-1"
+					/>
+				) }
+				{ children }
+				<Control
+					{ ...this.props }
+					{ ...this.state }
 					activeId={ activeId }
+					className={ controlClassName }
+					disabled={ disabled }
+					hasTags={ hasMultiple }
+					isExpanded={ isExpanded }
 					listboxId={ listboxId }
-					node={ selectControlRef.current }
-					onSelect={ selectOption }
-					onSearch={ search }
-					options={ getOptions() }
-					decrementSelectedIndex={ decrementSelectedIndex }
-					incrementSelectedIndex={ incrementSelectedIndex }
-					setExpanded={ setIsExpanded }
+					onSearch={ this.search }
+					selected={ this.getSelected() }
+					onChange={ this.setNewValue }
+					setExpanded={ this.setExpanded }
+					updateSearchOptions={ this.updateSearchOptions }
+					decrementSelectedIndex={ this.decrementSelectedIndex }
+					incrementSelectedIndex={ this.incrementSelectedIndex }
 				/>
-			) }
-		</div>
-	);
+				{ ! inlineTags && hasMultiple && (
+					<Tags { ...this.props } selected={ this.getSelected() } />
+				) }
+				{ isExpanded && (
+					<List
+						{ ...this.props }
+						{ ...this.state }
+						activeId={ activeId }
+						listboxId={ listboxId }
+						node={ this.node }
+						onSelect={ this.selectOption }
+						onSearch={ this.search }
+						options={ this.getOptions() }
+						decrementSelectedIndex={ this.decrementSelectedIndex }
+						incrementSelectedIndex={ this.incrementSelectedIndex }
+						setExpanded={ this.setExpanded }
+					/>
+				) }
+			</div>
+		);
+	}
 }
 
 SelectControl.propTypes = {
@@ -517,4 +561,8 @@ SelectControl.defaultProps = {
 	staticList: false,
 };
 
-export default SelectControl;
+export default compose( [
+	withSpokenMessages,
+	withInstanceId,
+	withFocusOutside, // this MUST be the innermost HOC as it calls handleFocusOutside
+] )( SelectControl );

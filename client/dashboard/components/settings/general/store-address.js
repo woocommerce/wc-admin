@@ -87,6 +87,18 @@ export function useGetCountryStateAutofill( options, countryState, setValue ) {
 	const [ autofillState, setAutofillState ] = useState( '' );
 
 	useEffect( () => {
+		const option = options.find( ( opt ) => opt.key === countryState );
+		const labels = option ? option.label.split( /\u2013|\u2014|\-/ ) : [];
+		const newCountry = ( labels[ 0 ] || '' ).trim();
+		const newState = ( labels[ 1 ] || '' ).trim();
+
+		if ( newCountry !== autofillCountry || newState !== autofillState ) {
+			setAutofillCountry( newCountry );
+			setAutofillState( newState );
+		}
+	}, [ countryState ] );
+
+	useEffect( () => {
 		let filteredOptions = [];
 		const countrySearch = new RegExp(
 			escapeRegExp( autofillCountry ),
@@ -137,7 +149,7 @@ export function useGetCountryStateAutofill( options, countryState, setValue ) {
 		) {
 			setValue( 'countryState', filteredOptions[ 0 ].key );
 		}
-	}, [ autofillCountry, autofillState, countryState, options, setValue ] );
+	}, [ autofillCountry, autofillState, options, setValue ] );
 
 	return (
 		<Fragment>
