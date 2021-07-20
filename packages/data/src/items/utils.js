@@ -63,12 +63,13 @@ export function getLeaderboard( options ) {
 /**
  * Returns items based on a search query.
  *
- * @param  {Object}   select    Instance of @wordpress/select
- * @param  {string}   endpoint  Report API Endpoint
- * @param  {string[]} search    Array of search strings.
+ * @param {Object} select    Instance of @wordpress/select
+ * @param {string} endpoint  Report API Endpoint
+ * @param {string[]} search    Array of search strings.
+ * @param {Object} options  Query options.
  * @return {Object}   Object containing API request information and the matching items.
  */
-export function searchItemsByString( select, endpoint, search ) {
+export function searchItemsByString( select, endpoint, search, options ) {
 	const { getItems, getItemsError, isResolving } = select( STORE_NAME );
 
 	const items = {};
@@ -77,8 +78,10 @@ export function searchItemsByString( select, endpoint, search ) {
 	search.forEach( ( searchWord ) => {
 		const query = {
 			search: searchWord,
-			per_page: 10,
+			...{ per_page: 10 },
+			...options,
 		};
+
 		const newItems = getItems( endpoint, query );
 		newItems.forEach( ( item, id ) => {
 			items[ id ] = item;
