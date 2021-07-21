@@ -191,6 +191,11 @@ class Orders extends \WC_REST_Orders_Controller {
 			$data[ $key ] = wc_format_decimal( $data[ $key ], $this->request['dp'] );
 		}
 
+		// format total with order currency.
+		if ( $object instanceof \WC_Order ) {
+			$data['total_formatted'] = wp_strip_all_tags( html_entity_decode( $object->get_formatted_order_total() ), true );
+		}
+
 		// Format date values.
 		foreach ( $format_date as $key ) {
 			$datetime              = $data[ $key ];
@@ -245,6 +250,7 @@ class Orders extends \WC_REST_Orders_Controller {
 				'shipping_tax'         => $data['shipping_tax'],
 				'cart_tax'             => $data['cart_tax'],
 				'total'                => $data['total'],
+				'total_formatted'      => isset( $data['total_formatted'] ) ? $data['total_formatted'] : $data['total'],
 				'total_tax'            => $data['total_tax'],
 				'prices_include_tax'   => $data['prices_include_tax'],
 				'customer_id'          => $data['customer_id'],
