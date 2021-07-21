@@ -6,7 +6,6 @@ import { Component, Fragment } from '@wordpress/element';
 import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
-import { keyBy, map, merge } from 'lodash';
 import {
 	EmptyContent,
 	Flag,
@@ -17,7 +16,7 @@ import {
 } from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import { REPORTS_STORE_NAME, ITEMS_STORE_NAME } from '@woocommerce/data';
+import { ITEMS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -77,9 +76,8 @@ class OrdersPanel extends Component {
 		}
 
 		const getCustomerString = ( order ) => {
-			const extendedInfo = order.extended_info || {};
 			const { first_name: firstName, last_name: lastName } =
-				extendedInfo.customer || {};
+				order.customer || {};
 
 			if ( ! firstName && ! lastName ) {
 				return '';
@@ -90,18 +88,18 @@ class OrdersPanel extends Component {
 		};
 
 		const orderCardTitle = ( order ) => {
-			const {
-				extended_info: extendedInfo,
-				order_id: orderId,
-				order_number: orderNumber,
-			} = order;
-			const { customer } = extendedInfo || {};
-			const customerUrl = customer.customer_id
-				? getNewPath( {}, '/analytics/customers', {
-						filter: 'single_customer',
-						customers: customer.customer_id,
-				  } )
-				: null;
+			const { id: orderId, number: orderNumber, customer } = order;
+			let customerUrl = null;
+			if ( customer && customer.customer_id ) {
+				customerUrl = window.wcAdminFeatures.analytics
+					? getNewPath( {}, '/analytics/customers', {
+							filter: 'single_customer',
+							customers: customer.customer_id,
+					  } )
+					: getAdminLink(
+							'user-edit.php?user_id=' + customer.customer_id
+					  );
+			}
 
 			return (
 				<Fragment>
@@ -128,12 +126,13 @@ class OrdersPanel extends Component {
 									type="wp-admin"
 								/>
 							),
-							destinationFlag: customer.country ? (
-								<Flag
-									code={ customer.country }
-									round={ false }
-								/>
-							) : null,
+							destinationFlag:
+								customer && customer.country ? (
+									<Flag
+										code={ customer && customer.country }
+										round={ false }
+									/>
+								) : null,
 							customerLink: customerUrl ? (
 								<Link
 									href={ customerUrl }
@@ -155,13 +154,10 @@ class OrdersPanel extends Component {
 		orders.forEach( ( order ) => {
 			const {
 				date_created_gmt: dateCreatedGmt,
-				extended_info: extendedInfo,
-				order_id: orderId,
+				products,
+				id: orderId,
 			} = order;
-			const productsCount =
-				extendedInfo && extendedInfo.products
-					? extendedInfo.products.length
-					: 0;
+			const productsCount = products ? products.length : 0;
 
 			cards.push(
 				<ActivityCard
@@ -190,7 +186,7 @@ class OrdersPanel extends Component {
 									productsCount
 								) }
 							</span>
-							<span>{ order.total_formatted }</span>
+							<span>{ order.total }</span>
 						</div>
 					}
 				>
@@ -220,7 +216,7 @@ class OrdersPanel extends Component {
 		const { isRequesting, isError, orderStatuses } = this.props;
 
 		if ( isError ) {
-			if ( ! orderStatuses.length ) {
+			if ( ! orderStatuses.length && window.wcAdminFeatures.analytics ) {
 				return (
 					<EmptyContent
 						title={ __(
@@ -295,10 +291,7 @@ OrdersPanel.contextType = CurrencyContext;
 
 export default withSelect( ( select, props ) => {
 	const { countUnreadOrders, orderStatuses } = props;
-	const { getItems, getItemsError } = select( ITEMS_STORE_NAME );
-	const { getReportItems, getReportItemsError, isResolving } = select(
-		REPORTS_STORE_NAME
-	);
+	const { getItems, getItemsError, isResolving } = select( ITEMS_STORE_NAME );
 
 	if ( ! orderStatuses.length && countUnreadOrders === 0 ) {
 		return { isRequesting: false };
@@ -309,7 +302,16 @@ export default withSelect( ( select, props ) => {
 		page: 1,
 		per_page: 5,
 		status: orderStatuses,
-		_fields: [ 'id', 'date_created_gmt', 'status' ],
+		_fields: [
+			'id',
+			'number',
+			'status',
+			'total',
+			'customer',
+			'products',
+			'customer_id',
+			'date_created_gmt',
+		],
 	};
 	/* eslint-disable @wordpress/no-unused-vars-before-return */
 	const actionableOrders = Array.from(
@@ -330,54 +332,20 @@ export default withSelect( ( select, props ) => {
 		};
 	}
 
-	// Retrieve the Order stats data from our reporting table.
-	const ordersQuery = {
-		page: 1,
-		per_page: 5,
-		extended_info: true,
-		match: 'any',
-		order_includes: map( actionableOrders, 'id' ),
-		status_is: orderStatuses,
-		_fields: [
-			'order_id',
-			'order_number',
-			'status',
-			'total_sales',
-			'total_formatted',
-			'extended_info.customer',
-			'extended_info.products',
-		],
-	};
-
-	const reportOrders = getReportItems( 'orders', ordersQuery ).data;
-	const isError = Boolean( getReportItemsError( 'orders', ordersQuery ) );
-	const isRequesting = isResolving( 'getReportItems', [
-		'orders',
-		ordersQuery,
-	] );
-	/* eslint-enable @wordpress/no-unused-vars-before-return */
-	let orders = [];
+	const isError = Boolean( getItemsError( 'orders', actionableOrders ) );
 
 	if (
 		countUnreadOrders === null ||
-		typeof reportOrders === 'undefined' ||
-		( reportOrders.length && ! actionableOrders.length ) ||
-		isRequesting
+		typeof actionableOrders === 'undefined' ||
+		! actionableOrders.length
 	) {
 		return { isRequesting: true };
 	}
 
-	if ( reportOrders.length ) {
-		// Merge the core endpoint data with our reporting table.
-		const actionableOrdersById = keyBy( actionableOrders, 'id' );
-		orders = reportOrders.map( ( order ) =>
-			merge( {}, order, actionableOrdersById[ order.order_id ] || {} )
-		);
-	}
 	return {
-		orders,
+		orders: actionableOrders,
 		isError,
-		isRequesting,
+		isRequesting: isRequestingActionable,
 		orderStatuses,
 	};
 } )( OrdersPanel );
