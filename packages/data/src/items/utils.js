@@ -68,8 +68,8 @@ export function getLeaderboard( options ) {
  * @param  {string[]} search    Array of search strings.
  * @return {Object}   Object containing API request information and the matching items.
  */
-export function searchItemsByString( select, endpoint, search ) {
-	const { getItems, getItemsError, isResolving } = select( STORE_NAME );
+export function searchItemsByString( selector, endpoint, search ) {
+	const { getItems, getItemsError, isResolving } = selector;
 
 	const items = {};
 	let isRequesting = false;
