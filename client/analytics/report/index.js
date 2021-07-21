@@ -103,7 +103,10 @@ export default compose(
 		const itemsResult = searchItemsByString(
 			select,
 			mappedReport,
-			searchWords
+			searchWords,
+			{
+				per_page: 100,
+			}
 		);
 		const { isError, isRequesting, items } = itemsResult;
 		const ids = Object.keys( items );
