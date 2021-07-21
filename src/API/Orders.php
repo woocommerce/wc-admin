@@ -88,27 +88,28 @@ class Orders extends \WC_REST_Orders_Controller {
 	 */
 	protected function get_products_by_order_id( $order_id ) {
 		global $wpdb;
-		$order_product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
-		$products                   = $wpdb->get_results(
+		$order_items_table    = $wpdb->prefix . 'woocommerce_order_items';
+		$order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
+		$products             = $wpdb->get_results(
 			$wpdb->prepare(
 				// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				"SELECT
 				order_id,
-				product_id,
-				variation_id,
-				post_title as product_name,
-				product_qty as product_quantity
-			FROM {$wpdb->posts}
-			JOIN
-			    {$order_product_lookup_table}
-				ON {$wpdb->posts}.ID = (
-					CASE WHEN variation_id > 0
-						THEN variation_id
-						ELSE product_id
-					END
-				)
+				order_itemmeta.meta_value as product_id,
+				order_itemmeta_2.meta_value as product_quantity,
+				order_itemmeta_3.meta_value as variation_id,
+				{$wpdb->posts}.post_title as product_name
+			FROM {$order_items_table} order_items
+			    LEFT JOIN {$order_itemmeta_table} order_itemmeta on order_items.order_item_id = order_itemmeta.order_item_id
+			    LEFT JOIN {$order_itemmeta_table} order_itemmeta_2 on order_items.order_item_id = order_itemmeta_2.order_item_id
+			    LEFT JOIN {$order_itemmeta_table} order_itemmeta_3 on order_items.order_item_id = order_itemmeta_3.order_item_id
+			    LEFT JOIN {$wpdb->posts} on {$wpdb->posts}.ID = order_itemmeta.meta_value
 			WHERE
 				order_id = ( %d )
+			    AND order_itemmeta.meta_key = '_product_id'
+				AND order_itemmeta_2.meta_key = '_qty'
+			  	AND order_itemmeta_3.meta_key = '_variation_id'
+			GROUP BY product_id
 			", // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$order_id
 			),
